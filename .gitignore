@@ -1,0 +1,7 @@
+build
+.vscode
+.DS_Store
+old
+.pio/
+**/.venv/*
+*/__pycache__/*

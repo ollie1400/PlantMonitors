@@ -1,0 +1,12 @@
+* D:\Misc\TTGO-HiGrow\electronics\soil_current_analysis.asc
+V1 N003 0 PULSE(-3.3 3.3 0 0 0 0.00032 0.00064 10000)
+XU1 0 N002 N001 N005 N004 AD8038
+V2 N005 0 -3.3
+V3 N001 0 3.3
+R1 N002 N003 51k
+R2 N004 N002 2k
+R3 NC_01 N004 1k
+.tran 0.01
+.lib ADI.lib
+.backanno
+.end
