@@ -6,6 +6,15 @@
 
 typedef uint32_t nvs_handle_t;
 
+void clearNVS()
+{
+    int err;
+    err = nvs_flash_init();
+    Serial.println("nvs_flash_init: " + err);
+    err = nvs_flash_erase();
+    Serial.println("nvs_flash_erase: " + err);
+}
+
 bool initNVS()
 {
     Serial.println("initNVS");

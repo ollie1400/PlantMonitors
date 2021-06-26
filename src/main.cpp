@@ -74,26 +74,113 @@ bool tryInitI2CAndDevices()
     return true;
 }
 
-void smartConfigStart()
+void scanNetworks()
 {
-    PRINTLN("smartConfigStart...");
+    // scan for nearby networks:
+    Serial.println("** Scan Networks **");
+    byte numSsid = WiFi.scanNetworks();
+
+    // print the list of networks seen:
+    Serial.print("SSID List:");
+    Serial.println(numSsid);
+    // print the network number and name for each network found:
+    for (int thisNet = 0; thisNet < numSsid; thisNet++)
+    {
+        Serial.print(thisNet);
+        Serial.print(") Network: ");
+        Serial.print(WiFi.SSID(thisNet));
+        Serial.print(" - ");
+        Serial.println(WiFi.encryptionType(thisNet));
+    }
+}
+
+void configStart()
+{
+    clearNVS();
+    initNVS();
+
+    scanNetworks();
+    PRINTLN("Starting config...");
 
     WiFi.disconnect();
     WiFi.beginSmartConfig();
+    constexpr uint32_t kBufferLength = 100;
+    char serialBuffer[kBufferLength];
+    uint32_t bufferPos = 0;
+    memset(serialBuffer, 0, kBufferLength);
+
+    char ssidFromSerial[kBufferLength];
+    char pskFromSerial[kBufferLength];
+    memset(ssidFromSerial, 0, kBufferLength);
+    memset(pskFromSerial, 0, kBufferLength);
+    bool gotSSIDFromSerial = false;
+    bool gotPSKFromSerial = false;
+
     while (!WiFi.smartConfigDone())
     {
-        PRINT(".");
-        delay(200);
-    }
-    WiFi.stopSmartConfig();
-    PRINTLN();
-    PRINTLN("smartConfigStop Connected:");
-    PRINT("Got SSID: ");
-    PRINTLN(WiFi.SSID().c_str());
-    PRINT("Got PSK: ");
-    PRINTLN(WiFi.psk().c_str());
+        while (Serial.available())
+        {
+            bool reset = false;
+            char character = Serial.read();
+            if (character == '\r')
+            {
+                // ignore these
+                continue;
+            }
+            if (character == '\n')
+            {
+                // parse the buffer
+                // first time is the SSID
+                // second time is the PSK
+                if (!gotSSIDFromSerial)
+                {
+                    strncpy(ssidFromSerial, serialBuffer, sizeof(ssidFromSerial));
+                    gotSSIDFromSerial = true;
+                }
+                else
+                {
+                    strncpy(pskFromSerial, serialBuffer, sizeof(pskFromSerial));
+                    gotPSKFromSerial = true;
+                }
 
-    if (!writeSSIDPW(WiFi.SSID().c_str(), WiFi.psk().c_str()))
+                reset = true;
+            }
+            else
+            {
+                serialBuffer[bufferPos++] = character;
+                if (reset == kBufferLength)
+                {
+                    reset = true;
+                }
+            }
+
+            if (reset)
+            {
+                bufferPos = 0;
+                memset(serialBuffer, 0, kBufferLength);
+            }
+        }
+
+        // if we got ssid and psk from serial, then we're done
+        if (gotSSIDFromSerial && gotPSKFromSerial)
+        {
+            break;
+        }
+    }
+
+    WiFi.stopSmartConfig();
+
+    const bool useSerialResults = gotSSIDFromSerial && gotPSKFromSerial;
+    const char *ssid = useSerialResults ? ssidFromSerial : WiFi.SSID().c_str();
+    const char *psk = useSerialResults ? pskFromSerial : WiFi.psk().c_str();
+
+    PRINTLN();
+    PRINT("Got SSID: ");
+    PRINTLN(ssid);
+    PRINT("Got PSK: ");
+    PRINTLN(psk);
+
+    if (!writeSSIDPW(ssid, psk))
     {
         PRINTLN("Failed to save SSID and Password");
     }
@@ -154,8 +241,10 @@ void enterDeepSleep()
 
 bool connectToWifi()
 {
-    char ssid[1024];
-    char password[1024];
+    char ssid[24];
+    memset(ssid, 0, sizeof(ssid));
+    char password[24];
+    memset(password, 0, sizeof(password));
     initNVS();
     const bool hasDetails = tryReadSSIDPW(ssid, password);
     if (hasDetails)
@@ -164,14 +253,17 @@ bool connectToWifi()
         PRINTLN(WiFi.macAddress());
 
         PRINT("Connecting to ");
-        PRINT(ssid);
-        WiFi.begin(ssid, password);
+        PRINTLN(ssid);
+
+        WiFi.mode(WIFI_STA);
+        // seems to be important to have the (const char*) cast to ensure we call the correct overload of begin
+        WiFi.begin((const char *)ssid, (const char *)password);
         const uint32_t start_ms = millis();
         constexpr uint32_t kWifiConnectTimeout_ms = 20 * 1000;
         while (WiFi.status() != WL_CONNECTED)
         {
             delay(500);
-            PRINT(".");
+            PRINTLN(WiFi.status());
             if (millis() - start_ms > kWifiConnectTimeout_ms)
             {
                 PRINTLN("\nFailed to connect to WiFi");
@@ -210,10 +302,10 @@ void setup()
     // so we store details in NVS instead by ourselves
     WiFi.persistent(false);
 
-    // if started up with button held down, then go into smart config mode
+    // if started up with button held down, then go into configuration mode
     if (digitalRead(USER_BUTTON) == LOW)
     {
-        smartConfigStart();
+        configStart();
     }
 
     PRINTLN("Firmware version ");

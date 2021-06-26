@@ -4,6 +4,8 @@
 #define MAX_PWD_LENGTH 30
 #define MAX_SENSOR_NAME 20
 
+void clearNVS();
+
 /// @brief initialise the NVS system
 bool initNVS();
 
