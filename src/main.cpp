@@ -263,7 +263,7 @@ bool connectToWifi()
         while (WiFi.status() != WL_CONNECTED)
         {
             delay(500);
-            PRINTLN(WiFi.status());
+            PRINT(".");
             if (millis() - start_ms > kWifiConnectTimeout_ms)
             {
                 PRINTLN("\nFailed to connect to WiFi");
