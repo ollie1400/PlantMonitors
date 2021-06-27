@@ -334,7 +334,7 @@ if __name__ == "__main__":
         "--db", dest="db_path", help="Path to the database file to be used", type=str, default=DEFAULT_DB_PATH)
     argparser.add_argument("--broker", dest="mqtt_broker",
                            help="The MQTT broker URI", type=str, default=DEFAULT_MQTT_BROKER)
-    argparser.add_argument("--no-relay", dest="no_relay", default=False)
+    argparser.add_argument("--no-relay", dest="no_relay", action="store_true")
     args = argparser.parse_args()
 
     # make database instance
