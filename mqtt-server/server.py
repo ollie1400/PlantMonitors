@@ -334,6 +334,7 @@ if __name__ == "__main__":
         "--db", dest="db_path", help="Path to the database file to be used", type=str, default=DEFAULT_DB_PATH)
     argparser.add_argument("--broker", dest="mqtt_broker",
                            help="The MQTT broker URI", type=str, default=DEFAULT_MQTT_BROKER)
+    argparser.add_argument("--no-relay", dest="no_relay", default=False)
     args = argparser.parse_args()
 
     # make database instance
@@ -377,12 +378,13 @@ if __name__ == "__main__":
                 y_series_data = y_series_data[1:]
 
     # start the MQTT relay
-    relay = MQTTRelay(topic_filter="sensors/#",
-                      mqtt_host=args.mqtt_broker)
-    relay.register_new_topic_callback(new_topic_callback)
-    relay.register_new_data_callback(new_data_callback)
-    logging.info("Starting MQTT relay...")
-    relay.initialise()
+    if not args.no_relay:
+        relay = MQTTRelay(topic_filter="sensors/#",
+                        mqtt_host=args.mqtt_broker)
+        relay.register_new_topic_callback(new_topic_callback)
+        relay.register_new_data_callback(new_data_callback)
+        logging.info("Starting MQTT relay...")
+        relay.initialise()
 
     logging.info("Starting Flask server...")
     start_flask_app_blocking = True
@@ -400,5 +402,6 @@ if __name__ == "__main__":
         logging.info("Flask server started...")
 
     # close things
-    relay.uninitialise()
+    if not args.no_relay:
+        relay.uninitialise()
     database.close()

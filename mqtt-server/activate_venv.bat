@@ -1,9 +1,9 @@
 :start
-IF EXIST ".venv" (
-call .venv\Scripts\activate
+IF EXIST "venv" (
+call venv\Scripts\activate
 ) ELSE (
-call virtualenv .venv
+call python -m venv venv
 GOTO start
 )
 
-pip install -r requirements.txt
+call pip install -r requirements.txt
