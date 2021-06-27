@@ -5,3 +5,4 @@ old
 .pio/
 **/.venv/*
 */__pycache__/*
+mqtt-server/venv/
