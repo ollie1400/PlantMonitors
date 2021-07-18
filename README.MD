@@ -7,9 +7,8 @@ See the README in `mqtt-server` for how to set up and run the server.
 
 ## Button operations
 - *Long press* the *BOOT* button to enter smartconfig mode
-- *Long press* the *User* button to enter deepsleep mode
-- *Double press* the User button to enter smartconfig mode
 - *Press* the *Reset* button to reset the device
+- *Press* the *Reset* button with the *User* button *Held* to start up in smart config mode
 
 ## The measurements
 

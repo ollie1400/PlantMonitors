@@ -120,6 +120,10 @@ def parse_proto_to_dict(data: bytearray) -> Measurements:
 def new_data_callback(topic, data: bytearray):
 
     measurements = parse_proto_to_dict(data)
+    if measurements is None:
+        logging.error(f"Unable to parse new data on topic {topic}")
+        return
+
     measurements_log_str = "{}".format(measurements)
     measurements_log_str = measurements_log_str.replace('\n', ', ')
     logging.info("New data on topic {} : {}".format(
@@ -380,7 +384,7 @@ if __name__ == "__main__":
     # start the MQTT relay
     if not args.no_relay:
         relay = MQTTRelay(topic_filter="sensors/#",
-                        mqtt_host=args.mqtt_broker)
+                          mqtt_host=args.mqtt_broker)
         relay.register_new_topic_callback(new_topic_callback)
         relay.register_new_data_callback(new_data_callback)
         logging.info("Starting MQTT relay...")

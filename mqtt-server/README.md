@@ -8,12 +8,24 @@ A raspberry pi is set up as the server.  It is
  - running an mDNS service
 
 
-## Running the server
+## Running the server locally
 
 Set up the python environment by running `source activate_venv.sh`
 
 On raspberry pi you might need to run to make numpy work correctly (see https://numpy.org/devdocs/user/troubleshooting-importerror.html)
 `sudo apt-get install libatlas-base-dev`
+
+Run the python server by doing `python server.py`
+
+You can do both of the above steps by running `startserver.bat` on windows, or `startserver.sh` on linux.
+
+### Server options
+
+You can run `server.py` with the following arguments.  All of these are optional:
+- `--no-relay` Don't start the MQTT relay (useful for debugging if no relay exists or you don't want to use it)
+- `--broker <mqtt_broker>` Specify the MQTT broker to use.  Default is `ttgo-server.local`
+- `--port <flask_port>` Specify which port the Flask server is hosted on.  Default is `1234`
+- `--db <db_file>` Specify the relative path to the database file to use.  Default is `databases\databases.db`
 
 ## Setting up the mDNS service
 
