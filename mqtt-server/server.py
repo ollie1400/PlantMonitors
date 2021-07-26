@@ -22,6 +22,7 @@ import database
 
 
 DEFAULT_MQTT_BROKER = "ttgo-server.local"
+DEFAULT_MQTT_BROKER_PORT = 1883
 DEFAULT_FLASK_PORT = 1234
 DEFAULT_DB_PATH = os.path.join("databases", "database.db")
 MAX_DATA_LENGTH = 5000
@@ -173,6 +174,11 @@ def new_data_callback(topic, data: bytearray):
 
 app = Flask(__name__)
 app.json_encoder = CustomJSONEncoder
+
+
+@app.route('/')
+def index():
+    return "Hello, world!"
 
 
 @app.route('/topics/')
@@ -338,6 +344,8 @@ if __name__ == "__main__":
         "--db", dest="db_path", help="Path to the database file to be used", type=str, default=DEFAULT_DB_PATH)
     argparser.add_argument("--broker", dest="mqtt_broker",
                            help="The MQTT broker URI", type=str, default=DEFAULT_MQTT_BROKER)
+    argparser.add_argument("--broker-port", dest="mqtt_broker_port",
+                           help="The MQTT broker port", type=str, default=DEFAULT_MQTT_BROKER_PORT)
     argparser.add_argument("--no-relay", dest="no_relay", action="store_true")
     args = argparser.parse_args()
 
@@ -384,7 +392,8 @@ if __name__ == "__main__":
     # start the MQTT relay
     if not args.no_relay:
         relay = MQTTRelay(topic_filter="sensors/#",
-                          mqtt_host=args.mqtt_broker)
+                          mqtt_host=args.mqtt_broker,
+                          mqtt_host_port=int(args.mqtt_broker_port))
         relay.register_new_topic_callback(new_topic_callback)
         relay.register_new_data_callback(new_data_callback)
         logging.info("Starting MQTT relay...")

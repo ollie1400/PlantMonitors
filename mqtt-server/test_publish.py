@@ -3,7 +3,8 @@ import time
 
 
 def test_publish():
-    MQTT_HOST = "test.mosquitto.org"
+    #MQTT_HOST = "test.mosquitto.org"
+    MQTT_HOST = "localhost"
     MQTT_HOST_PORT = 1883
 
     client = mqtt.Client("Publisher")
@@ -15,7 +16,7 @@ def test_publish():
     client.connect(MQTT_HOST, port=MQTT_HOST_PORT)
 
     for i in range(10):
-        client.publish("qdtest/number", 1.5)
+        client.publish("sensors/number", 1.5)
         time.sleep(0.5)
 
     assert True

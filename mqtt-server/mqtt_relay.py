@@ -7,7 +7,7 @@ class MQTTRelay:
 
     def __init__(self, topic_filter='#',
                  mqtt_host="test.mosquitto.org",
-                 mqt_host_port=1883,
+                 mqtt_host_port=1883,
                  enable_logging=True):
         """
         optionally set a topic filter as [topic_filter]
@@ -19,7 +19,7 @@ class MQTTRelay:
         self.__loop_thread = None
         self.__topic_filter = topic_filter
         self.__mqtt_host = mqtt_host
-        self.__mqt_host_port = mqt_host_port
+        self.__mqtt_host_port = mqtt_host_port
         self.__enable_logging = enable_logging
 
         self.__new_topic_callbacks = []
@@ -34,7 +34,7 @@ class MQTTRelay:
 
         # connect to MQTT broker and subscribe to all messages
         self.__client = mqtt.Client("Server")
-        self.__client.connect(self.__mqtt_host, port=self.__mqt_host_port)
+        self.__client.connect(self.__mqtt_host, port=self.__mqtt_host_port)
         self.__client.reconnect_delay_set()
         self.__client.on_message = self.__on_message
         if self.__enable_logging:
