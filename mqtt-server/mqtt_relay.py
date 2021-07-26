@@ -13,7 +13,6 @@ class MQTTRelay:
         optionally set a topic filter as [topic_filter]
         by default subscribe to all messages ('#'), not recommended (https://www.hivemq.com/blog/mqtt-essentials-part-5-mqtt-topics-best-practices/)
         """
-        super(MQTTRelay, self).__init__()
         
         self.__client = None
         # thread that runs the "loop_forever" method of the mqtt client

@@ -1,4 +1,7 @@
 #!/bin/bash
 
-source activate_venv.sh
-python server.py
+# start mqtt broker
+avahi-daemon --reload
+
+# start server
+python server.py --broker 127.0.0.1
