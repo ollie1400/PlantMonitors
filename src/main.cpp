@@ -27,7 +27,7 @@ constexpr uint16_t kMQTTBrokerPort = 1883;
 char g_mqttTopicRoot[1024] = "sensors";
 constexpr char kServerAddress[] = "ttgo-server";
 constexpr uint16_t kServerPort = 1234;
-constexpr bool kServerIsLocal = true;
+constexpr bool kDoMDNSLookup = false;  // if true, try to discover the MQTT server via MDNS
 constexpr char kNextSensorNameAPI[] = "/sensors/next/";
 
 // working data stored in RTC memory
@@ -424,7 +424,7 @@ void setup()
         if (!tryReadSensorName(sensorName))
         {
             // get a name from the server
-            if (!getNextSensorName(&g_wifiClient, kServerAddress, kServerPort, kNextSensorNameAPI, sensorName, MAX_SENSOR_NAME + 1, kServerIsLocal))
+            if (!getNextSensorName(&g_wifiClient, kServerAddress, kServerPort, kNextSensorNameAPI, sensorName, MAX_SENSOR_NAME + 1, kDoMDNSLookup))
             {
                 Serial.println("Failed to get sensor name.  Using DEFAULT");
                 strcpy(sensorName, "DEFAULT");
