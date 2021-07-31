@@ -17,7 +17,7 @@ import os
 from datetime import datetime
 import json
 import logging
-import logging
+import logging.handlers
 import database
 
 
@@ -40,7 +40,16 @@ def setup_logging():
     stream_handler.setLevel(logging.INFO)
     stream_handler.setFormatter(formatter)
 
+    log_path = "logs"
+    if not os.path.exists(log_path):
+        os.mkdir(log_path)
+    file_handler = logging.handlers.TimedRotatingFileHandler(
+        os.path.join("logs", "server_log.log"), when='D', interval=1)
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(formatter)
+
     logger.addHandler(stream_handler)
+    logger.addHandler(file_handler)
     logger.info("Log Started")
 
 
