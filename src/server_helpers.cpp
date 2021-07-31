@@ -15,6 +15,8 @@ namespace
 
         Serial.print("Performing GET request to: ");
         Serial.print(serverAddress);
+        Serial.print(":");
+        Serial.print(serverPort);
         Serial.println(apiPath);
         error = httpClient->get(serverAddress, serverPort, apiPath, USER_AGENT);
         if (error != 0)
