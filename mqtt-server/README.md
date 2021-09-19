@@ -54,6 +54,20 @@ The server will now be addressable via `ttgo-server.local`
 
 Check any output from the server using `sudo journalctl -u ttgo-server.service`
 
+# Pushing to GCP
+
+Build docker container with `make build`
+
+To run the container locally, do `make run`
+
+## Publishing to GCP
+
+Run `gcloud auth configure-docker` to configure docker to use gcp for auth, if this hasn't been done already
+
+Run `make publish` to push to GCP
+
+
+
 ## Helpful links and notes
 
 - `https://davidhamann.de/2018/02/11/integrate-bokeh-plots-in-flask-ajax/` how to update Bokeh graphs in real time
