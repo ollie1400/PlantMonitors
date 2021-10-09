@@ -1,9 +1,14 @@
-## Compiling
+## Compiling (platformio)
 
 Use `platformio` to compile and upload firmware to the device.  The firmware periodically takes measurements using sensors of the device (see `The measurements` below), and every few measurements connects to the local Wifi access point to broadcast them to an MQTT broker at address `ttgo-server.local`.
 
 See the README in `mqtt-server` for how to set up and run the server.
 
+## Compiling (ESP-IDF)
+
+Ensure you have a copy of `esp-idf` on your machine.
+Run `install_idf.bat` from a terminal from the root of this repo.  (NOTE that to get around `pyenv` running on the local machine, a particular version of python is used, as specified in the top of this file.  Modify as necessary.)
+Run `build.bat` to build this project.
 
 ## Button operations
 - *Long press* the *BOOT* button to enter smartconfig mode

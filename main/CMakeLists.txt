@@ -1,0 +1,1 @@
+idf_component_register(SRCS "nvs_utils.c" "main.c" INCLUDE_DIRS ".")
