@@ -1,6 +1,6 @@
-import mqtt_relay
+from mqtt_server import mqtt_relay
 import time
-import database
+from mqtt_server import database
 import logging
 import sys
 

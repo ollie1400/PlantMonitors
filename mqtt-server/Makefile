@@ -46,4 +46,4 @@ publish:
 	docker push us.gcr.io/plantmonitors/mqtt-server:latest
 
 run:
-	docker run -p 1234:1234 -p 1883:1883 -t mqtt-server --network host
+	docker run --name mqtt_server -p 1234:1234 -p 1883:1883 -t mqtt-server --network host

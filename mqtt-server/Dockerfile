@@ -4,13 +4,13 @@ FROM python:3.9
 
 RUN mkdir -p ./app
 WORKDIR /app
-COPY . ./
-RUN pip install -r requirements.txt && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y \
        mosquitto \
        sudo
+COPY . ./
+RUN pip install -r requirements.txt
 
 #RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 #USER docker

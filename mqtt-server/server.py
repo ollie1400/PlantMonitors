@@ -1,4 +1,3 @@
-from typing import Set
 from flask import Flask
 from flask.json import JSONEncoder
 from flask import render_template, jsonify, request
@@ -7,8 +6,7 @@ from bokeh.models.sources import AjaxDataSource
 from bokeh.models.formatters import DatetimeTickFormatter
 from bokeh.plotting import figure
 from bokeh.embed import components
-from mqtt_relay import MQTTRelay
-import pyprotos.measurements_pb2 as measurement_pb2
+from mqtt_server.mqtt_relay import MQTTRelay
 from pyprotos.measurements_pb2 import Measurements
 import threading
 import argparse
@@ -18,7 +16,7 @@ from datetime import datetime
 import json
 import logging
 import logging.handlers
-import database
+from mqtt_server import database
 
 
 DEFAULT_MQTT_BROKER = "ttgo-server.local"
